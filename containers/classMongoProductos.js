@@ -7,6 +7,15 @@ class contProd{
     constructor(collectionName,docSchema){
         this.collection = mongoose.model(collectionName,docSchema)
     }
+    async existe(id){
+        try {
+            const result =await this.collection.findById(id);
+            console.log(result)
+            return result
+        } catch (error) {
+            console.log('Hubo un error al guardar el articulo',error)
+        }
+    }
     async create(obj){
         try {
             const result = await this.collection.create(obj);

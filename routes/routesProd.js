@@ -1,9 +1,15 @@
 import { Router } from "express";
-import { valorDao as prodApi} from "../dao/index.js";
-//import {contProd} from "../containers/classMongoProductos.js"
-//import {contCart} from "../containers/classMongoCarrito.js"
+import { colProdDao as prodApi} from "../dao/index.js";
 
 const router = new Router();
+
+function auth(req,res,next){
+    if(!isAdmin){
+        res.status(404).json({"error": "Funcion Habilitada solo para Administradores"})
+    } else {
+        next()
+    }
+}
 
 router.get('/',async(req,res)=>{
     const result = await prodApi.getAll();
@@ -20,7 +26,7 @@ router.get('/:id',async(req,res)=>{
     : res.status(400).json({"error": "ID Inexistente"})
 })
 
-router.post('/',async(req,res)=>{
+router.post('/',auth,async(req,res)=>{
     const newProd = req.body;
     const propiedades = ["title","description","image","price","stock"];
     const all = propiedades.every(prop => newProd.hasOwnProperty(prop));
@@ -33,7 +39,7 @@ router.post('/',async(req,res)=>{
     
 })
 
-router.put('/:id',async(req,res)=>{
+router.put('/:id',auth,async(req,res)=>{
     const { id } = req.params;
     const body = req.body;
     const propiedades = ["title","description","image","price","stock"];
@@ -49,7 +55,7 @@ router.put('/:id',async(req,res)=>{
     
 })
 
-router.delete('/:id',async(req,res)=>{
+router.delete('/:id',auth,async(req,res)=>{
     const {id} = req.params;
     const result = await prodApi.deleteById(id);
     result 

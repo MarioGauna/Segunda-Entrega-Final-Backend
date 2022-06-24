@@ -1,19 +1,27 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-let valorDao
+let colProdDao
     switch (process.env.DB_NAME) {
-        case 'mongoDBP':
+        case 'mongoDB':
             import('./productos/productsMongoDao.js').then(({initProd})=>{
-                valorDao = new initProd()
+                colProdDao = new initProd()
             })
             break;
-        case 'mongoDBC':
-            import('./carritos/cartMongoDao.js').then(({initCart})=>{
-                valorDao = new initCart()
-            })
         default:
             break;
     }
 
-export {valorDao};
+    let colCartDao
+    switch (process.env.DB_NAME) {
+        
+        case 'mongoDB':
+            import('./carritos/cartMongoDao.js').then(({initCart})=>{
+                colCartDao = new initCart()
+            })
+            break;
+        default:
+            break;
+    }
+
+export {colProdDao,colCartDao};
